@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Profile from './components/Profile';
 import AuthService from './service/AuthService';
 import './App.css';
+import Spinner from './components/Spinner';
 export default class App extends Component {
 
   state={
@@ -24,10 +25,10 @@ export default class App extends Component {
     if(this.state.user === null) {
       this.service.isAuthenticated()
       .then(response => {
-        this.setState({
-          user: response,
-          loading: false
-        })
+          this.setState({
+            user: response,
+            loading: false
+          })
         })
         .catch( err => {
           this.setState({
@@ -54,17 +55,17 @@ export default class App extends Component {
     const loggedInNavbar =  
     <>
       <Link to="/profile">Profile</Link>
-      <Route path="/profile" component={() => <Profile user={this.state.user}/>} />
+      <Route path="/profile" component={(props) => <Profile {...props} user={this.state.user} setUser={this.setUser}/>} />
       <button onClick={this.userLogout}>Logout</button>
     </>
 
     return (
       <div className="App">
         Welcome to the Index Page
-              
-        {this.state.loading && "Loading"}
+   
+        {this.state.loading && <Spinner />}
 
-        {!this.state.loading && this.state.user ? loggedInNavbar : <Redirect to="/login"/> }
+        {!this.state.loading && (this.state.user ? loggedInNavbar : <Redirect to="/login"/>) }
 
         <Link to="/signup">Signup</Link>
         <Link to="/login">Login</Link>
